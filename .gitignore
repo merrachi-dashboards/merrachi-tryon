@@ -18,4 +18,6 @@ pnpm-debug.log*
 *.swo
 .next
 .vercel
-.vercel
+merrachi_ai
+check_supabase.js
+setup_supabase.js
