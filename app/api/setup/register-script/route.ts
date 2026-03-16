@@ -37,13 +37,19 @@ export async function GET(req: NextRequest) {
     });
 
     const listData = await listRes.json();
-    const existing = listData.script_tags?.find((s: any) => s.src === scriptSrc);
+    const allMatching = listData.script_tags?.filter((s: any) => s.src === scriptSrc) || [];
 
-    if (existing) {
-      return NextResponse.json({ message: "Script tag already registered", script_tag: existing });
+    // Delete any duplicates, keeping none (we'll register a clean one below)
+    if (allMatching.length > 0) {
+      for (const tag of allMatching) {
+        await fetch(`https://${shop}/admin/api/2024-01/script_tags/${tag.id}.json`, {
+          method: "DELETE",
+          headers: { "X-Shopify-Access-Token": accessToken },
+        });
+      }
     }
 
-    // Register a new script tag
+    // Register one clean script tag with caching enabled
     const res = await fetch(`https://${shop}/admin/api/2024-01/script_tags.json`, {
       method: "POST",
       headers: {
@@ -55,6 +61,7 @@ export async function GET(req: NextRequest) {
           event: "onload",
           src: scriptSrc,
           display_scope: "online_store",
+          cache: true,
         },
       }),
     });
