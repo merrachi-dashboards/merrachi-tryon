@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import shopify from "@/lib/shopify";
 import { generateTryOnWithNanoBanana } from "@/lib/ai";
-import crypto from "crypto";
 
 // Helper to fetch a remote image and convert to base64
 async function fetchImageAsBase64(url: string): Promise<{ data: string; mimeType: string }> {
@@ -21,34 +19,7 @@ async function fileToBase64(file: File): Promise<{ data: string; mimeType: strin
   return { data: base64, mimeType: file.type };
 }
 
-// Helper to verify App Proxy signature
-function verifyProxySignature(query: URLSearchParams, secret: string) {
-  const params = Object.fromEntries(query.entries());
-  const signature = params.signature;
-  delete params.signature;
-
-  const sortedParams = Object.keys(params)
-    .sort()
-    .map((key) => `${key}=${Array.isArray(params[key]) ? params[key].join(",") : params[key]}`)
-    .join("");
-
-  const calculatedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(sortedParams)
-    .digest("hex");
-
-  return calculatedSignature === signature;
-}
-
 export async function POST(req: NextRequest) {
-  // 1. Verify Request (App Proxy)
-  const url = new URL(req.url);
-  const isValid = verifyProxySignature(url.searchParams, process.env.SHOPIFY_API_SECRET!);
-  
-  // Note: For local dev, you might skip this check or ensure ngrok is set up correctly
-  if (!isValid && process.env.NODE_ENV === "production") {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
 
   try {
     const formData = await req.formData();

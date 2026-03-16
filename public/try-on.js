@@ -3,7 +3,7 @@
   if (!window.location.pathname.includes("/products/")) return;
 
   // ─── CONFIG ──────────────────────────────────────────────────────────────────
-  const APP_API_URL = "https://your-app-url.com"; // REPLACE with your hosted app URL
+  const APP_API_URL = "https://merrachitryonapp.vercel.app";
   // ─────────────────────────────────────────────────────────────────────────────
 
   // ─── CSS ─────────────────────────────────────────────────────────────────────
