@@ -19,8 +19,18 @@ async function fileToBase64(file: File): Promise<{ data: string; mimeType: strin
   return { data: base64, mimeType: file.type };
 }
 
-export async function POST(req: NextRequest) {
+export async function OPTIONS(req: NextRequest) {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
 
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const closeupFile = formData.get("closeup") as File;
@@ -100,13 +110,22 @@ export async function POST(req: NextRequest) {
       ]);
     }
 
-    return NextResponse.json({ resultUrl });
+    return NextResponse.json({ resultUrl }, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      }
+    });
 
   } catch (error: any) {
     console.error(error);
     return NextResponse.json({ 
       error: "Internal Server Error", 
       details: error.message 
-    }, { status: 500 });
+    }, { 
+      status: 500,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      }
+    });
   }
 }
