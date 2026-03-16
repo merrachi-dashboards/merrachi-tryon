@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppProvider } from "@shopify/app-bridge-react";
-import { Page, Layout, Card, Text, BlockStack, List, InlineStack } from "@shopify/polaris";
+import { Page, Layout, Card, Text, BlockStack, List, InlineStack, AppProvider as PolarisProvider } from "@shopify/polaris";
+import translations from "@shopify/polaris/locales/en.json";
 
 export default function Home() {
   const [shop, setShop] = useState("");
@@ -21,14 +21,8 @@ export default function Home() {
     return <div>Loading...</div>;
   }
 
-  const config = {
-    apiKey: process.env.SHOPIFY_API_KEY || "",
-    host: host,
-    forceRedirect: true
-  };
-
   return (
-    <AppProvider config={config}>
+    <PolarisProvider i18n={translations}>
       <Page title="Merrachi Virtual Try On">
         <BlockStack gap="500">
           <Layout>
@@ -92,6 +86,6 @@ export default function Home() {
           </Layout>
         </BlockStack>
       </Page>
-    </AppProvider>
+    </PolarisProvider>
   );
 }

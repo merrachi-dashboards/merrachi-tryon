@@ -5,7 +5,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="shopify-api-key" content={process.env.SHOPIFY_API_KEY} />
+        <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
         <link
           rel="stylesheet"
           href="https://unpkg.com/@shopify/polaris@12.0.0/build/esm/styles.css"

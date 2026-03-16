@@ -1,0 +1,9 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/callback/route": "app/api/auth/callback/route.js",
+  "/api/auth/route": "app/api/auth/route.js",
+  "/api/try-on/generate/route": "app/api/try-on/generate/route.js",
+  "/api/webhooks/route": "app/api/webhooks/route.js",
+  "/page": "app/page.js",
+  "/api/setup/register-script/route": "app/api/setup/register-script/route.js"
+}
