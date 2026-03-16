@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFreshShopifyToken } from "@/lib/shopify-token";
 
+// Force this route to run as a serverless function on every request
+export const dynamic = "force-dynamic";
+
 // This route is called ONCE during setup to register the Script Tag with Shopify.
 // The script tag tells Shopify to inject your try-on JS into every storefront page.
 export async function GET(req: NextRequest) {
