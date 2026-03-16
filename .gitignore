@@ -16,4 +16,6 @@ pnpm-debug.log*
 .vscode
 *.swp
 *.swo
+.next
+.vercel
 .vercel
