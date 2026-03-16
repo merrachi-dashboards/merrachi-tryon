@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { prisma } from "@/lib/shopify";
+import shopify from "@/lib/shopify";
 import { generateTryOnWithNanoBanana } from "@/lib/ai";
 import crypto from "crypto";
 
@@ -84,12 +84,10 @@ export async function POST(req: NextRequest) {
 
     // 3. Save to DB
     if (customerId) {
-      await prisma.userPhoto.createMany({
-        data: [
-          { customerId, type: "closeup", url: closeupUrl },
-          { customerId, type: "fullbody", url: fullbodyUrl },
-        ],
-      });
+      await supabaseAdmin.from("UserPhoto").insert([
+        { customerId, type: "closeup", url: closeupUrl },
+        { customerId, type: "fullbody", url: fullbodyUrl },
+      ]);
     }
 
     // 4. Call AI Service (Nano Banana 2)
@@ -122,13 +120,13 @@ export async function POST(req: NextRequest) {
 
     // 6. Save Result (Optional)
     if (customerId) {
-      await prisma.tryOnResult.create({
-        data: {
+      await supabaseAdmin.from("TryOnResult").insert([
+        {
           customerId,
           productId,
           resultUrl,
         },
-      });
+      ]);
     }
 
     return NextResponse.json({ resultUrl });

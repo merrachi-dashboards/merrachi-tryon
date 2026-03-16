@@ -28,26 +28,20 @@ SHOPIFY_API_SECRET=your_api_secret
 SHOPIFY_APP_URL=your_app_url
 SCOPES=write_products,read_products,read_customers
 
-# Database (Supabase PostgreSQL)
-DATABASE_URL="postgresql://postgres:[PASSWORD]@db.[PROJECT_REF].supabase.co:5432/postgres"
+# Supabase Storage & DB
+NEXT_PUBLIC_SUPABASE_URL="https://[PROJECT_REF].supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your_anon_key"
+SUPABASE_SERVICE_ROLE_KEY="your_service_role_key"
 
-# Supabase Storage
-SUPABASE_URL="https://[PROJECT_REF].supabase.co"
-SUPABASE_ANON_KEY="your_anon_key"
-
-# AI Service
-AI_API_URL="https://api.banana.dev/..."
-AI_API_KEY="your_ai_api_key"
+# AI Service (Nano Banana 2)
+GEMINI_API_KEY="your_gemini_api_key"
 ```
 
-### 3. Setup Supabase & Prisma
+### 3. Setup Supabase
 
 1.  Create a new Supabase project.
 2.  Create a **Storage Bucket** named `user-photos` (Public Read).
-3.  Run the Prisma migration:
-    ```bash
-    npx prisma migrate dev --name init
-    ```
+3.  Execute the SQL in `supabase/schema.sql` in your Supabase SQL Editor.
 
 ### 4. Configure App Proxy
 

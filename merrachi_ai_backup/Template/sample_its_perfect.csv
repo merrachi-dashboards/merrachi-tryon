@@ -1,7 +1,0 @@
-PO Number,SKU,Product Title,Ordered Qty,Received Qty,Status,Factory,Expected Date,Production Cost,Shipping Cost
-PO-2024-001,RMD-BLK-S,RMD Abaya Black - S,200,150,Partial,Factory A,2024-04-15,22.00,3.00
-PO-2024-001,RMD-BLK-M,RMD Abaya Black - M,250,200,Partial,Factory A,2024-04-15,22.00,3.00
-PO-2024-001,RMD-BLK-L,RMD Abaya Black - L,150,100,Partial,Factory A,2024-04-15,22.00,3.00
-PO-2024-002,RMD-EMR-OS,RMD Hijab Silk - OS,600,600,Completed,Factory B,2024-03-20,5.00,0.50
-PO-2024-003,RMD-SGE-S,RMD Kimono Sage - S,100,80,Partial,Factory C,2024-05-01,30.00,5.00
-PO-2024-003,RMD-SGE-M,RMD Kimono Sage - M,150,120,Partial,Factory C,2024-05-01,30.00,5.00

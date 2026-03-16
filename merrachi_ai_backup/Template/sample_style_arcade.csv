@@ -1,7 +1,0 @@
-Handle,Title,Product Type,Tags,Variants,Option1 Name,Option1 Value,Option2 Name,Option2 Value,SKU,Price,Compare At Price,Inventory Quantity,Buying Price,Target Margin,Season,Collection
-rmd-001,RMD Abaya Black,Abaya,RMD,Black / S,Color,Black,Size,S,RMD-BLK-S,85.00,95.00,150,25.00,0.7,SS24,RMD
-rmd-001,RMD Abaya Black,Abaya,RMD,Black / M,Color,Black,Size,M,RMD-BLK-M,85.00,95.00,200,25.00,0.7,SS24,RMD
-rmd-001,RMD Abaya Black,Abaya,RMD,Black / L,Color,Black,Size,L,RMD-BLK-L,85.00,95.00,100,25.00,0.7,SS24,RMD
-rmd-002,RMD Hijab Silk,Hijab,RMD,Emerald,Color,Emerald,Size,OS,RMD-EMR-OS,25.00,30.00,500,5.50,0.78,SS24,RMD
-rmd-003,RMD Kimono Sage,Kimono,RMD,Sage / S,Color,Sage,Size,S,RMD-SGE-S,110.00,125.00,80,35.00,0.68,SS24,RMD
-rmd-003,RMD Kimono Sage,Kimono,RMD,Sage / M,Color,Sage,Size,M,RMD-SGE-M,110.00,125.00,120,35.00,0.68,SS24,RMD
