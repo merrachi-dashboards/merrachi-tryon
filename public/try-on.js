@@ -317,7 +317,10 @@
         body: formData,
       });
 
-      if (!res.ok) throw new Error("Server error");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.details || "Server error");
+      }
 
       const data = await res.json();
 
@@ -326,7 +329,8 @@
       document.getElementById("merrachi-step-result").style.display = "block";
     } catch (err) {
       console.error(err);
-      alert("Something went wrong. Please try again.");
+      const errorMsg = err.message || "Something went wrong. Please try again.";
+      alert("Error: " + errorMsg);
       document.getElementById("merrachi-step-loading").style.display = "none";
       document.getElementById("merrachi-step-upload").style.display = "block";
     }
