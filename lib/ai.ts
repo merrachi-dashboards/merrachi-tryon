@@ -2,25 +2,37 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATI
 const MODEL_NAME = "gemini-3.1-flash-image-preview"; // Nano Banana 2
 
 interface NanoBananaParams {
-  userImageBase64: string;
-  userImageMimeType: string;
+  closeupImageBase64: string;
+  closeupImageMimeType: string;
+  fullbodyImageBase64: string;
+  fullbodyImageMimeType: string;
   garmentImageBase64: string;
   garmentImageMimeType: string;
 }
 
 export async function generateTryOnWithNanoBanana({
-  userImageBase64,
-  userImageMimeType,
+  closeupImageBase64,
+  closeupImageMimeType,
+  fullbodyImageBase64,
+  fullbodyImageMimeType,
   garmentImageBase64,
   garmentImageMimeType,
 }: NanoBananaParams): Promise<string> {
-  if (!GEMINI_API_KEY) {
-    throw new Error("Missing GEMINI_API_KEY");
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === "dummy_gemini_key") {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Missing GEMINI_API_KEY in production environment.");
+    }
+    console.warn("AI_API_KEY is missing or dummy. Returning mock URL.");
+    return "https://via.placeholder.com/600x800?text=Try+On+Result";
   }
 
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
 
-  const prompt = `Create a professional e-commerce fashion photo. Take the garment from the second image and let the person from the first image wear it. Generate a realistic, full-body shot of the person wearing the garment, with the lighting and shadows adjusted to match the environment. Ensure high-fidelity preservation of the person's facial features and the garment's texture.`;
+  // This prompt is improved based on the working fashion_app
+  const prompt = `Virtual try-on request: I have provided a product image of a garment, a close-up selfie, and a full-body photo of a person. 
+  Please render a high-fidelity image of the person from the photos wearing the exact garment. 
+  Maintain the person's facial features from the selfie and body proportions from the full-body photo. 
+  The resulting image should look like a professional e-commerce fashion photography asset.`;
 
   const payload = {
     contents: [
@@ -29,14 +41,20 @@ export async function generateTryOnWithNanoBanana({
           { text: prompt },
           {
             inline_data: {
-              mime_type: userImageMimeType,
-              data: userImageBase64,
+              mime_type: garmentImageMimeType,
+              data: garmentImageBase64,
             },
           },
           {
             inline_data: {
-              mime_type: garmentImageMimeType,
-              data: garmentImageBase64,
+              mime_type: closeupImageMimeType,
+              data: closeupImageBase64,
+            },
+          },
+          {
+            inline_data: {
+              mime_type: fullbodyImageMimeType,
+              data: fullbodyImageBase64,
             },
           },
         ],
@@ -63,7 +81,6 @@ export async function generateTryOnWithNanoBanana({
 
     const data = await response.json();
 
-    // The response for IMAGE modality returns the image data in the parts
     const candidates = data.candidates;
     if (!candidates || candidates.length === 0) {
       console.error("Gemini Response Data (No candidates):", JSON.stringify(data, null, 2));
@@ -77,12 +94,11 @@ export async function generateTryOnWithNanoBanana({
       console.error("Gemini Response Data (No image part):", JSON.stringify(data, null, 2));
       const textPart = parts.find((part: any) => part.text);
       if (textPart) {
-        throw new Error(`Gemini returned text instead of an image: ${textPart.text}`);
+        throw new Error(`Gemini blocked the request or returned text: ${textPart.text}`);
       }
       throw new Error("No image part found in Gemini response");
     }
 
-    // Returns base64 data. We'll need to upload this to Supabase to get a URL
     return imagePart.inline_data.data;
   } catch (error) {
     console.error("Error in generateTryOnWithNanoBanana:", error);

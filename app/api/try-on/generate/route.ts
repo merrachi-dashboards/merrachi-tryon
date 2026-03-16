@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
     const productImage = formData.get("productImage") as string;
 
     if (!closeupFile || !fullbodyFile) {
-      return NextResponse.json({ error: "Please upload both photos" }, { status: 400 });
+      return NextResponse.json({ error: "Please upload both photos" }, { 
+        status: 400,
+        headers: { "Access-Control-Allow-Origin": "*" }
+      });
     }
 
     // 2. Upload to Supabase
@@ -73,13 +76,18 @@ export async function POST(req: NextRequest) {
       ]);
     }
 
-    // 4. Call AI Service (Nano Banana 2)
-    const userImg = await fileToBase64(fullbodyFile);
-    const garmentImg = productImage ? await fetchImageAsBase64(productImage) : null;
+    // 4. Call AI Service (Nano Banana 2) - NOW SENDING ALL 3 IMAGES
+    const [userCloseup, userFullBody, garmentImg] = await Promise.all([
+      fileToBase64(closeupFile),
+      fileToBase64(fullbodyFile),
+      productImage ? fetchImageAsBase64(productImage) : Promise.resolve(null),
+    ]);
 
     const generatedBase64 = await generateTryOnWithNanoBanana({
-      userImageBase64: userImg.data,
-      userImageMimeType: userImg.mimeType,
+      closeupImageBase64: userCloseup.data,
+      closeupImageMimeType: userCloseup.mimeType,
+      fullbodyImageBase64: userFullBody.data,
+      fullbodyImageMimeType: userFullBody.mimeType,
       garmentImageBase64: garmentImg?.data || "",
       garmentImageMimeType: garmentImg?.mimeType || "image/jpeg",
     });
