@@ -102,7 +102,8 @@ export async function generateTryOnWithNanoBanana({
     }
 
     const parts = candidates[0].content.parts;
-    const imagePart = parts.find((part: any) => part.inline_data);
+    // Check for both camelCase and snake_case as different Gemini models/versions return both
+    const imagePart = parts.find((part: any) => part.inlineData || part.inline_data);
 
     if (!imagePart) {
       const textPart = parts.find((part: any) => part.text);
@@ -114,6 +115,7 @@ export async function generateTryOnWithNanoBanana({
       const logData = JSON.parse(JSON.stringify(data));
       if (logData.candidates?.[0]?.content?.parts) {
         logData.candidates[0].content.parts.forEach((p: any) => {
+          if (p.inlineData) p.inlineData.data = "(base64 data omitted)";
           if (p.inline_data) p.inline_data.data = "(base64 data omitted)";
         });
       }
@@ -122,7 +124,8 @@ export async function generateTryOnWithNanoBanana({
       throw new Error(errorMsg);
     }
 
-    return imagePart.inline_data.data;
+    const base64Data = imagePart.inlineData?.data || imagePart.inline_data?.data;
+    return base64Data;
   } catch (error) {
     console.error("Error in generateTryOnWithNanoBanana:", error);
     throw error;
