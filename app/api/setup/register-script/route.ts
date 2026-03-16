@@ -1,14 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getFreshShopifyToken } from "@/lib/shopify-token";
 
 // This route is called ONCE during setup to register the Script Tag with Shopify.
 // The script tag tells Shopify to inject your try-on JS into every storefront page.
 export async function GET(req: NextRequest) {
   const shop = process.env.SHOPIFY_SHOP;
-  const accessToken = process.env.SHOPIFY_ACCESS_TOKEN;
   const appUrl = process.env.SHOPIFY_APP_URL;
 
-  if (!shop || !accessToken || !appUrl) {
-    return NextResponse.json({ error: "Missing env vars" }, { status: 500 });
+  if (!shop || !appUrl) {
+    return NextResponse.json({ error: "Missing env vars (SHOPIFY_SHOP or SHOPIFY_APP_URL)" }, { status: 500 });
+  }
+
+  let accessToken: string;
+  try {
+    accessToken = await getFreshShopifyToken();
+  } catch (e) {
+    return NextResponse.json({ error: "Could not obtain Shopify access token" }, { status: 500 });
   }
 
   const scriptSrc = `${appUrl}/try-on.js`;
