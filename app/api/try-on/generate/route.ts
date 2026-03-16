@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
     const productId = formData.get("productId") as string;
     const productImage = formData.get("productImage") as string;
 
-    if (!closeupFile || !fullbodyFile || !productImage) {
-      return NextResponse.json({ error: "Missing files or product image" }, { status: 400 });
+    if (!closeupFile || !fullbodyFile) {
+      return NextResponse.json({ error: "Please upload both photos" }, { status: 400 });
     }
 
     // 2. Upload to Supabase
@@ -62,16 +62,14 @@ export async function POST(req: NextRequest) {
     }
 
     // 4. Call AI Service (Nano Banana 2)
-    const [userImg, garmentImg] = await Promise.all([
-      fileToBase64(fullbodyFile),
-      fetchImageAsBase64(productImage),
-    ]);
+    const userImg = await fileToBase64(fullbodyFile);
+    const garmentImg = productImage ? await fetchImageAsBase64(productImage) : null;
 
     const generatedBase64 = await generateTryOnWithNanoBanana({
       userImageBase64: userImg.data,
       userImageMimeType: userImg.mimeType,
-      garmentImageBase64: garmentImg.data,
-      garmentImageMimeType: garmentImg.mimeType,
+      garmentImageBase64: garmentImg?.data || "",
+      garmentImageMimeType: garmentImg?.mimeType || "image/jpeg",
     });
 
     // 5. Upload generated result to Supabase

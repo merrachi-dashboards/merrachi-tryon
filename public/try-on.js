@@ -255,9 +255,41 @@
   async function handleGenerate() {
     const closeupFile = document.getElementById("merrachi-photo-closeup").files[0];
     const fullbodyFile = document.getElementById("merrachi-photo-fullbody").files[0];
-    const productImage = document.querySelector(
-      ".product__media img, .product-single__photo img, [data-product-image]"
-    )?.src || "";
+
+    // Try every common Shopify theme product image selector
+    const productImageEl = document.querySelector([
+      ".product__media img",
+      ".product-single__photo img",
+      ".product-gallery img",
+      ".product__photo img",
+      ".product-featured-media img",
+      "figure.product__media img",
+      "[data-product-image]",
+      "[data-product-featured-image]",
+      ".product-image-main img",
+      ".product__image img",
+      "img.product-image",
+      ".product-media img",
+      ".product__media-item img",
+    ].join(", "));
+
+    // Get the highest-res src available (srcset first, then src)
+    let productImage = "";
+    if (productImageEl) {
+      const srcset = productImageEl.srcset || productImageEl.getAttribute("srcset") || "";
+      if (srcset) {
+        // Pick the largest image from srcset
+        const parts = srcset.split(",").map(s => s.trim().split(" "));
+        const largest = parts.sort((a, b) => parseInt(b[1]) - parseInt(a[1]))[0];
+        productImage = largest ? largest[0] : "";
+      }
+      productImage = productImage || productImageEl.src || "";
+    }
+
+    // Fallback: use the page's og:image meta tag
+    if (!productImage) {
+      productImage = document.querySelector('meta[property="og:image"]')?.content || "";
+    }
 
     // Get product ID from page meta
     const productId =
@@ -265,7 +297,7 @@
       window.__st?.p_id ||
       "";
 
-    // Get customer ID if logged in (Shopify injects this in meta tag)
+    // Get customer ID if logged in
     const customerId =
       document.querySelector('meta[name="shopify-checkout-api-token"]')?.content || "";
 
