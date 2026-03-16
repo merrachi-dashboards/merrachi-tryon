@@ -62,6 +62,11 @@ export async function generateTryOnWithNanoBanana({
     ],
     generationConfig: {
       responseModalities: ["IMAGE"],
+      // Matching the fashion_app settings
+      imageConfig: {
+        aspectRatio: "3:4",
+        imageSize: "2K",
+      },
     },
   };
 

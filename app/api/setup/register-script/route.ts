@@ -21,13 +21,16 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Could not obtain Shopify access token" }, { status: 500 });
   }
 
-  // Hardcode the production URL to avoid any env var whitespace/formatting issues
-  const scriptSrc = "https://merrachitryonapp.vercel.app/try-on.js";
+  // Use a version query parameter to ensure the latest version is always loaded
+  // and we bypass any potential CDN caching at the Shopify level.
+  const version = Date.now();
+  const scriptSrc = `https://merrachitryonapp.vercel.app/try-on.js?v=${version}`;
 
   console.log("Registering script tag:", scriptSrc, "| shop:", shop);
 
   try {
-    // First, check if script tag already exists
+    // First, check if script tag already exists with OUR BASE URL
+    // We want to replace ANY try-on.js script, regardless of version
     const listRes = await fetch(`https://${shop}/admin/api/2024-01/script_tags.json`, {
       method: "GET",
       headers: {
@@ -37,7 +40,9 @@ export async function GET(req: NextRequest) {
     });
 
     const listData = await listRes.json();
-    const allMatching = listData.script_tags?.filter((s: any) => s.src === scriptSrc) || [];
+    const allMatching = listData.script_tags?.filter((s: any) => 
+      s.src.includes("merrachitryonapp.vercel.app/try-on.js")
+    ) || [];
 
     // Delete any duplicates, keeping none (we'll register a clean one below)
     if (allMatching.length > 0) {
