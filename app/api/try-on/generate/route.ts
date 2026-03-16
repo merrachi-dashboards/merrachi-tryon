@@ -47,7 +47,9 @@ export async function POST(req: NextRequest) {
       .upload(fullbodyPath, fullbodyFile, { upsert: true });
 
     if (closeupError || fullbodyError) {
-      throw new Error("Upload failed");
+      console.error("Supabase Upload Error (closeup):", closeupError);
+      console.error("Supabase Upload Error (fullbody):", fullbodyError);
+      throw new Error(`Upload failed: ${closeupError?.message || fullbodyError?.message || "Unknown error"}`);
     }
 
     const closeupUrl = supabaseAdmin.storage.from("user-photos").getPublicUrl(closeupPath).data.publicUrl;
@@ -100,8 +102,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ resultUrl });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ 
+      error: "Internal Server Error", 
+      details: error.message 
+    }, { status: 500 });
   }
 }
