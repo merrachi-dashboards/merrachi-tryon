@@ -4,8 +4,8 @@ import { getFreshShopifyToken } from "@/lib/shopify-token";
 // This route is called ONCE during setup to register the Script Tag with Shopify.
 // The script tag tells Shopify to inject your try-on JS into every storefront page.
 export async function GET(req: NextRequest) {
-  const shop = process.env.SHOPIFY_SHOP;
-  const appUrl = process.env.SHOPIFY_APP_URL;
+  const shop = (process.env.SHOPIFY_SHOP || "").trim();
+  const appUrl = (process.env.SHOPIFY_APP_URL || "").trim().replace(/\/$/, "");
 
   if (!shop || !appUrl) {
     return NextResponse.json({ error: "Missing env vars (SHOPIFY_SHOP or SHOPIFY_APP_URL)" }, { status: 500 });
@@ -18,7 +18,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Could not obtain Shopify access token" }, { status: 500 });
   }
 
-  const scriptSrc = `${appUrl}/try-on.js`;
+  // Hardcode the production URL to avoid any env var whitespace/formatting issues
+  const scriptSrc = "https://merrachitryonapp.vercel.app/try-on.js";
+
+  console.log("Registering script tag:", scriptSrc, "| shop:", shop);
 
   try {
     // First, check if script tag already exists
@@ -55,7 +58,7 @@ export async function GET(req: NextRequest) {
 
     if (!res.ok) {
       const err = await res.json();
-      return NextResponse.json({ error: err }, { status: 500 });
+      return NextResponse.json({ error: err, attempted_src: scriptSrc }, { status: 500 });
     }
 
     const data = await res.json();
