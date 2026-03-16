@@ -12,24 +12,24 @@
     #merrachi-try-on-btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       margin-top: 12px;
-      padding: 14px 24px;
-      background: #111;
+      padding: 18px 24px;
+      background: #b0a69b;
       color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      border: 2px solid #111;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
       border-radius: 4px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
+      transition: opacity 0.2s;
       width: 100%;
       justify-content: center;
     }
     #merrachi-try-on-btn:hover {
-      background: #fff;
-      color: #111;
+      opacity: 0.85;
     }
     #merrachi-modal-overlay {
       display: none;
@@ -115,31 +115,37 @@
     }
     #merrachi-generate-btn {
       width: 100%;
-      padding: 14px;
+      padding: 16px;
       background: #111;
       color: #fff;
       border: none;
       border-radius: 4px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       cursor: pointer;
+      transition: opacity 0.2s;
     }
+    #merrachi-generate-btn:hover { opacity: 0.9; }
     #merrachi-generate-btn:disabled { background: #ccc; cursor: not-allowed; }
     #merrachi-step-loading { text-align: center; padding: 20px 0; display: none; }
     #merrachi-step-loading .spinner {
       width: 40px; height: 40px;
       border: 4px solid #eee;
-      border-top-color: #111;
+      border-top-color: #b0a69b;
       border-radius: 50%;
       animation: merrachispin 0.8s linear infinite;
       margin: 0 auto 14px;
     }
     @keyframes merrachispin { to { transform: rotate(360deg); } }
     #merrachi-step-result { display: none; text-align: center; }
-    #merrachi-step-result img { width: 100%; border-radius: 8px; margin-bottom: 14px; }
+    #merrachi-step-result img { width: 100%; border-radius: 8px; margin-bottom: 20px; }
     #merrachi-reset-btn {
-      background: none; border: 2px solid #111; color: #111;
-      padding: 10px 24px; border-radius: 4px; cursor: pointer; font-weight: 600;
+      background: #b0a69b; border: none; color: #fff;
+      padding: 14px 24px; border-radius: 4px; cursor: pointer;
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em;
     }
     .merrachi-saved-notice {
       font-size: 11px; color: #888; margin-top: 8px; text-align: center;
@@ -157,10 +163,11 @@
     const btn = document.createElement("button");
     btn.id = "merrachi-try-on-btn";
     btn.innerHTML = `
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
       </svg>
-      Try On
+      Virtual Try On
     `;
     addToCartBtn.parentNode.insertBefore(btn, addToCartBtn.nextSibling);
 
