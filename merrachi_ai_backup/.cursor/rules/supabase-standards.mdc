@@ -1,0 +1,40 @@
+---
+description: Standards for Supabase migrations, schema management, and data handling in the Merrachi project.
+globs: supabase/**/*.sql, src/lib/supabase.ts, **/.env*
+alwaysApply: false
+---
+
+# Supabase Standards
+
+Guidelines for managing the database schema and data migrations.
+
+## Schema Management
+
+- **Migrations**: Always use the `supabase/migrations/` folder for DDL changes.
+- **Naming**: Use `YYYYMMDD_description.sql` format for new migrations.
+- **RLS**: Every table in the `public` schema MUST have Row Level Security (RLS) enabled.
+- **Types**: Use `gen_random_uuid()` for primary keys of type `uuid`.
+
+## Data Handling
+
+- **Service Role**: Use `SUPABASE_SERVICE_ROLE_KEY` only for administrative tasks (like token management or background jobs).
+- **Anon Key**: Use `NEXT_PUBLIC_SUPABASE_ANON_KEY` for client-side operations.
+- **Backups**: Regular backups should be exported as JSON or SQL and stored in `supabase/backups/` (gitignored if they contain sensitive data).
+
+## Migration Workflow
+
+1.  Export schema from source: `SELECT pg_get_tabledef(...)` or information_schema.
+2.  Export data as JSON: `SELECT json_agg(t) FROM table_name t`.
+3.  Apply schema to target via Supabase Dashboard or CLI.
+4.  Import data using specialized scripts to handle foreign key constraints.
+
+\`\`\`sql
+-- Example: Enable RLS
+ALTER TABLE analyses ENABLE ROW LEVEL SECURITY;
+
+-- Example: Policy
+CREATE POLICY "Users can only see their own data" 
+ON public.analyses 
+FOR SELECT 
+USING (auth.uid() = user_id);
+\`\`\`
