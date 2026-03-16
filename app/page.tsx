@@ -1,91 +1,94 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Page, Layout, Card, Text, BlockStack, List, InlineStack, AppProvider as PolarisProvider } from "@shopify/polaris";
+import { AppProvider, Page, Layout, Card, Text, BlockStack, List, InlineStack, Badge, Button } from "@shopify/polaris";
 import translations from "@shopify/polaris/locales/en.json";
 
 export default function Home() {
-  const [shop, setShop] = useState("");
-  const [host, setHost] = useState("");
-
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    const shopParam = url.searchParams.get("shop");
-    const hostParam = url.searchParams.get("host");
-
-    if (shopParam) setShop(shopParam);
-    if (hostParam) setHost(hostParam);
-  }, []);
-
-  if (!shop || !host) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <PolarisProvider i18n={translations}>
+    <AppProvider i18n={translations}>
       <Page title="Merrachi Virtual Try On">
         <BlockStack gap="500">
           <Layout>
             <Layout.Section>
               <Card>
-                <BlockStack gap="500">
-                  <BlockStack gap="200">
-                    <Text as="h2" variant="headingMd">
-                      Welcome to the Merrachi Try On App
-                    </Text>
-                    <Text as="p" variant="bodyMd">
-                      This app powers the Virtual Try On feature on your storefront.
-                      It connects your theme to the AI generation service.
-                    </Text>
-                  </BlockStack>
-                  <BlockStack gap="200">
-                    <Text as="h3" variant="headingSm">
-                      Quick Start Guide
-                    </Text>
-                    <List type="number">
-                      <List.Item>
-                        Ensure you have configured your <strong>App Proxy</strong> in the Partner Dashboard.
-                      </List.Item>
-                      <List.Item>
-                        Go to your <strong>Online Store &gt; Themes &gt; Customize</strong>.
-                      </List.Item>
-                      <List.Item>
-                        Navigate to a <strong>Product Page</strong>.
-                      </List.Item>
-                      <List.Item>
-                        Add the <strong>Virtual Try On Button</strong> block to your product template.
-                      </List.Item>
-                    </List>
-                  </BlockStack>
+                <BlockStack gap="400">
+                  <Text as="h2" variant="headingMd">
+                    Virtual Try On — Setup Guide
+                  </Text>
+                  <Text as="p" variant="bodyMd" tone="subdued">
+                    This app powers the Virtual Try On feature on your Merrachi storefront.
+                    Follow the steps below to activate it.
+                  </Text>
+                  <List type="number">
+                    <List.Item>
+                      Make sure you have set the <strong>App Proxy</strong> in Shopify Admin:
+                      <br />Subpath: <code>apps/try-on</code> → Proxy URL: your Vercel URL + <code>/api/try-on</code>
+                    </List.Item>
+                    <List.Item>
+                      Click the button below to inject the <strong>Try On button</strong> into your storefront automatically.
+                      This only needs to be done <strong>once</strong>.
+                    </List.Item>
+                    <List.Item>
+                      Go to your store and open any product page — you should see the <strong>Try On</strong> button below the Add to Cart button.
+                    </List.Item>
+                  </List>
+                  <Button
+                    url="/api/setup/register-script"
+                    external
+                    variant="primary"
+                  >
+                    Activate Try On Button on Storefront
+                  </Button>
                 </BlockStack>
               </Card>
             </Layout.Section>
+
             <Layout.Section variant="oneThird">
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    App Status
-                  </Text>
-                  <BlockStack gap="200">
+              <BlockStack gap="400">
+                <Card>
+                  <BlockStack gap="300">
+                    <Text as="h2" variant="headingMd">
+                      App Status
+                    </Text>
                     <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">Shop:</Text>
-                      <Text as="span" variant="bodyMd" fontWeight="bold">{shop}</Text>
+                      <Text as="span" variant="bodyMd">Supabase Storage</Text>
+                      <Badge tone="success">Connected</Badge>
                     </InlineStack>
                     <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">AI Service:</Text>
-                      <Text as="span" variant="bodyMd" tone="success">Connected</Text>
+                      <Text as="span" variant="bodyMd">AI (Nano Banana 2)</Text>
+                      <Badge tone="success">Connected</Badge>
                     </InlineStack>
                     <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">Database:</Text>
-                      <Text as="span" variant="bodyMd" tone="success">Connected</Text>
+                      <Text as="span" variant="bodyMd">Shopify Store</Text>
+                      <Badge tone="success">uk-merrachi</Badge>
                     </InlineStack>
                   </BlockStack>
-                </BlockStack>
-              </Card>
+                </Card>
+
+                <Card>
+                  <BlockStack gap="300">
+                    <Text as="h2" variant="headingMd">
+                      How It Works
+                    </Text>
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      1. Customer clicks <strong>Try On</strong> on a product page.
+                    </Text>
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      2. They upload a close-up and full-body photo.
+                    </Text>
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      3. Nano Banana 2 (Gemini AI) generates a realistic photo of them wearing the garment.
+                    </Text>
+                    <Text as="p" variant="bodyMd" tone="subdued">
+                      4. Photos are saved to Supabase and linked to their account for next time.
+                    </Text>
+                  </BlockStack>
+                </Card>
+              </BlockStack>
             </Layout.Section>
           </Layout>
         </BlockStack>
       </Page>
-    </PolarisProvider>
+    </AppProvider>
   );
 }
