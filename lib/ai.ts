@@ -1,4 +1,4 @@
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "dummy_gemini_key";
 const MODEL_NAME = "gemini-3.1-flash-image-preview"; // Nano Banana 2
 
 interface NanoBananaParams {
